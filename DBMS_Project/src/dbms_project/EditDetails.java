@@ -1,0 +1,644 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package dbms_project;
+
+import javax.swing.ButtonGroup;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import oracle.jdbc.OracleTypes;
+
+import javax.swing.ButtonGroup;
+import javax.swing.ButtonModel;
+
+/**
+ *
+ * @author Harsh Kakasaniya
+ */
+public class EditDetails extends javax.swing.JFrame {
+    
+    Connection conn;
+    CallableStatement stmt;
+    ResultSet rs;
+    
+    String resId = "";
+    int homeDel = 0, dine = 0, opTod = 0;
+
+    public EditDetails() {
+        initComponents();
+        setSize(520,1100);
+        setTitle("Update Yourself Here !!!");
+        
+        ButtonGroup D = new ButtonGroup();
+        D.add(Edit_D_No);
+        D.add(Edit_D_Yes);
+        
+        ButtonGroup HD = new ButtonGroup();
+        HD.add(Edit_HD_No);
+        HD.add(Edit_HD_Yes);
+    }
+    public EditDetails(String resId, Connection conn) {
+        initComponents();
+        setSize(520,1100);
+        setTitle("Update Yourself Here !!!");
+        this.conn = conn;
+        
+        this.resId = resId;
+        fillDetails();
+        fillTimeBoxes();
+        fillStates();
+        
+        ButtonGroup D = new ButtonGroup();
+        D.add(Edit_D_No);
+        D.add(Edit_D_Yes);
+        
+        ButtonGroup HD = new ButtonGroup();
+        HD.add(Edit_HD_No);
+        HD.add(Edit_HD_Yes);
+    }
+    
+    void fillDetails(){
+        try {
+            stmt = conn.prepareCall("{call getResDetails(?, ?)}");
+            stmt.setString(1, resId);
+            stmt.registerOutParameter(2, OracleTypes.CURSOR);
+            stmt.execute();
+            
+            rs = (ResultSet) stmt.getObject(2);
+            while(rs.next()){
+                Edit_Name.setText(rs.getString("res_name"));
+                Edit_Street.setText(rs.getString("address_street"));
+                Edit_ZipCode.setText(rs.getString("address_zip"));
+                Edit_PhoneNo.setText(rs.getLong("phoneNo") + "");
+                if(rs.getInt("open_today") == 1){
+                    Edit_OpTodYes.setSelected(true);
+                    this.opTod = 1;
+                }
+                else{
+                    Edit_OpTodNo.setSelected(true);
+                    this.opTod = 0;
+                }
+             
+                if(rs.getInt("home_delivery")==1){
+                    Edit_HD_Yes.setSelected(true);
+                    this.homeDel = 1;
+                }
+                else{
+                    Edit_HD_No.setSelected(true);
+                    this.homeDel = 0;
+                }
+                
+                if(rs.getInt("dining") == 1){
+                    Edit_D_Yes.setSelected(true);
+                    this.dine = 1;
+                }
+                else{
+                    Edit_D_No.setSelected(true);
+                    this.dine = 0;
+                }
+                
+                Edit_Max_Tables.setText(rs.getString("tables_available"));
+                Edit_R_Password.setText(rs.getString("res_pwd"));
+               
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(After_Rest_Sign_In_OR_Up.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }   
+    
+    void fillStates(){
+        try {
+            stmt = conn.prepareCall("{call statesList(?)}");
+            stmt.registerOutParameter(1, OracleTypes.CURSOR);
+            stmt.execute();
+            
+            rs = (ResultSet) stmt.getObject(1);
+            while(rs.next()){
+                Edit_State.addItem(rs.getString("s_name"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Rest_SignUp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    void fillTimeBoxes(){
+        String[] s = new String[]{"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
+        for(int i=0; i<12; i++){
+            OT_Hr.addItem(s[i]);
+            CT_Hr.addItem(s[i]);
+        }
+        
+        String[] s1 = new String[]{"00", "15", "30", "45"};
+        for(int i=0; i<4; i++){
+            OT_Min.addItem(s1[i]);
+            CT_Min.addItem(s1[i]);
+        }
+        
+        OT_AM_PM.addItem("AM");
+        OT_AM_PM.addItem("PM");
+        CT_AM_PM.addItem("AM");
+        CT_AM_PM.addItem("PM");
+        
+    }
+    
+    public static boolean foo(String str) {
+        if(str != null && !str.isEmpty())
+            return false;
+        return true;
+    }
+    
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        Edit_PhoneNo = new javax.swing.JTextField();
+        UpdateDetails = new javax.swing.JButton();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        Edit_Name = new javax.swing.JTextField();
+        Edit_Street = new javax.swing.JTextField();
+        Edit_ZipCode = new javax.swing.JTextField();
+        Edit_State = new javax.swing.JComboBox<>();
+        Edit_City = new javax.swing.JComboBox<>();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        CT_AM_PM = new javax.swing.JComboBox<>();
+        CT_Hr = new javax.swing.JComboBox<>();
+        CT_Min = new javax.swing.JComboBox<>();
+        OT_Hr = new javax.swing.JComboBox<>();
+        OT_Min = new javax.swing.JComboBox<>();
+        OT_AM_PM = new javax.swing.JComboBox<>();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        Edit_Max_Tables = new javax.swing.JTextField();
+        Edit_HD_No = new javax.swing.JRadioButton();
+        Edit_HD_Yes = new javax.swing.JRadioButton();
+        Edit_D_Yes = new javax.swing.JRadioButton();
+        Edit_D_No = new javax.swing.JRadioButton();
+        Edit_OpTodNo = new javax.swing.JRadioButton();
+        Edit_OpTodYes = new javax.swing.JRadioButton();
+        jLabel21 = new javax.swing.JLabel();
+        jLabel22 = new javax.swing.JLabel();
+        Edit_R_Password = new javax.swing.JPasswordField();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setLayout(null);
+
+        jLabel2.setFont(new java.awt.Font("ITCEdwardianScriptW04-Reg", 3, 65)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 153, 102));
+        jLabel2.setText("Update your Details");
+        jPanel1.add(jLabel2);
+        jLabel2.setBounds(10, 20, 490, 80);
+
+        Edit_PhoneNo.setFont(new java.awt.Font("Arial", 3, 18)); // NOI18N
+        jPanel1.add(Edit_PhoneNo);
+        Edit_PhoneNo.setBounds(160, 370, 320, 40);
+
+        UpdateDetails.setBackground(new java.awt.Color(255, 153, 102));
+        UpdateDetails.setFont(new java.awt.Font("Tahoma", 3, 24)); // NOI18N
+        UpdateDetails.setText("Update");
+        UpdateDetails.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                UpdateDetailsActionPerformed(evt);
+            }
+        });
+        jPanel1.add(UpdateDetails);
+        UpdateDetails.setBounds(330, 930, 160, 70);
+
+        jLabel8.setFont(new java.awt.Font("Elephant", 3, 24)); // NOI18N
+        jLabel8.setText("Name");
+        jPanel1.add(jLabel8);
+        jLabel8.setBounds(20, 110, 100, 60);
+
+        jLabel9.setFont(new java.awt.Font("Elephant", 3, 24)); // NOI18N
+        jLabel9.setText("Street");
+        jPanel1.add(jLabel9);
+        jLabel9.setBounds(20, 160, 150, 60);
+
+        jLabel12.setFont(new java.awt.Font("Elephant", 3, 24)); // NOI18N
+        jLabel12.setText("City");
+        jPanel1.add(jLabel12);
+        jLabel12.setBounds(20, 250, 100, 60);
+
+        jLabel13.setFont(new java.awt.Font("Elephant", 3, 24)); // NOI18N
+        jLabel13.setText("State");
+        jPanel1.add(jLabel13);
+        jLabel13.setBounds(20, 210, 100, 60);
+
+        jLabel17.setFont(new java.awt.Font("Elephant", 3, 24)); // NOI18N
+        jLabel17.setText("Phone");
+        jPanel1.add(jLabel17);
+        jLabel17.setBounds(20, 360, 100, 60);
+
+        jLabel18.setFont(new java.awt.Font("Elephant", 3, 24)); // NOI18N
+        jLabel18.setText("Zip Code");
+        jPanel1.add(jLabel18);
+        jLabel18.setBounds(10, 300, 140, 60);
+
+        Edit_Name.setFont(new java.awt.Font("Arial", 3, 18)); // NOI18N
+        jPanel1.add(Edit_Name);
+        Edit_Name.setBounds(160, 120, 320, 40);
+
+        Edit_Street.setFont(new java.awt.Font("Arial", 3, 18)); // NOI18N
+        jPanel1.add(Edit_Street);
+        Edit_Street.setBounds(160, 170, 320, 40);
+
+        Edit_ZipCode.setFont(new java.awt.Font("Arial", 3, 18)); // NOI18N
+        jPanel1.add(Edit_ZipCode);
+        Edit_ZipCode.setBounds(160, 310, 320, 40);
+
+        Edit_State.setFont(new java.awt.Font("Arial", 3, 18)); // NOI18N
+        Edit_State.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                Edit_StateMouseClicked(evt);
+            }
+        });
+        jPanel1.add(Edit_State);
+        Edit_State.setBounds(160, 230, 320, 30);
+
+        Edit_City.setFont(new java.awt.Font("Arial", 3, 18)); // NOI18N
+        Edit_City.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Edit_CityActionPerformed(evt);
+            }
+        });
+        jPanel1.add(Edit_City);
+        Edit_City.setBounds(160, 270, 320, 30);
+
+        jLabel15.setFont(new java.awt.Font("Elephant", 3, 24)); // NOI18N
+        jLabel15.setText("Opening Time");
+        jPanel1.add(jLabel15);
+        jLabel15.setBounds(10, 430, 200, 60);
+
+        jLabel19.setFont(new java.awt.Font("Elephant", 3, 24)); // NOI18N
+        jLabel19.setText("Closing Time");
+        jPanel1.add(jLabel19);
+        jLabel19.setBounds(10, 480, 180, 60);
+
+        jPanel1.add(CT_AM_PM);
+        CT_AM_PM.setBounds(400, 490, 80, 40);
+
+        jPanel1.add(CT_Hr);
+        CT_Hr.setBounds(220, 490, 80, 40);
+
+        jPanel1.add(CT_Min);
+        CT_Min.setBounds(310, 490, 80, 40);
+
+        jPanel1.add(OT_Hr);
+        OT_Hr.setBounds(220, 440, 80, 40);
+
+        jPanel1.add(OT_Min);
+        OT_Min.setBounds(310, 440, 80, 40);
+
+        jPanel1.add(OT_AM_PM);
+        OT_AM_PM.setBounds(400, 440, 80, 40);
+
+        jLabel11.setFont(new java.awt.Font("Elephant", 3, 24)); // NOI18N
+        jLabel11.setText("Home Delivery Available ?");
+        jPanel1.add(jLabel11);
+        jLabel11.setBounds(10, 630, 360, 50);
+
+        jLabel14.setFont(new java.awt.Font("Elephant", 3, 24)); // NOI18N
+        jLabel14.setText("Maximum Tables Available");
+        jPanel1.add(jLabel14);
+        jLabel14.setBounds(10, 760, 380, 60);
+
+        jLabel16.setFont(new java.awt.Font("Elephant", 3, 24)); // NOI18N
+        jLabel16.setText("Dining Available ?");
+        jPanel1.add(jLabel16);
+        jLabel16.setBounds(10, 690, 250, 50);
+
+        Edit_Max_Tables.setFont(new java.awt.Font("Arial", 3, 18)); // NOI18N
+        jPanel1.add(Edit_Max_Tables);
+        Edit_Max_Tables.setBounds(390, 770, 100, 40);
+
+        Edit_HD_No.setBackground(new java.awt.Color(255, 153, 102));
+        Edit_HD_No.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        Edit_HD_No.setText("N");
+        Edit_HD_No.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Edit_HD_NoActionPerformed(evt);
+            }
+        });
+        jPanel1.add(Edit_HD_No);
+        Edit_HD_No.setBounds(440, 640, 40, 30);
+
+        Edit_HD_Yes.setBackground(new java.awt.Color(255, 153, 102));
+        Edit_HD_Yes.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        Edit_HD_Yes.setText("Y");
+        Edit_HD_Yes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Edit_HD_YesActionPerformed(evt);
+            }
+        });
+        jPanel1.add(Edit_HD_Yes);
+        Edit_HD_Yes.setBounds(360, 640, 40, 30);
+
+        Edit_D_Yes.setBackground(new java.awt.Color(255, 153, 102));
+        Edit_D_Yes.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        Edit_D_Yes.setText("Y");
+        Edit_D_Yes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Edit_D_YesActionPerformed(evt);
+            }
+        });
+        jPanel1.add(Edit_D_Yes);
+        Edit_D_Yes.setBounds(360, 700, 40, 30);
+
+        Edit_D_No.setBackground(new java.awt.Color(255, 153, 102));
+        Edit_D_No.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        Edit_D_No.setText("N");
+        Edit_D_No.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Edit_D_NoActionPerformed(evt);
+            }
+        });
+        jPanel1.add(Edit_D_No);
+        Edit_D_No.setBounds(440, 700, 40, 30);
+
+        Edit_OpTodNo.setBackground(new java.awt.Color(255, 153, 102));
+        Edit_OpTodNo.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        Edit_OpTodNo.setText("N");
+        Edit_OpTodNo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Edit_OpTodNoActionPerformed(evt);
+            }
+        });
+        jPanel1.add(Edit_OpTodNo);
+        Edit_OpTodNo.setBounds(440, 580, 40, 25);
+
+        Edit_OpTodYes.setBackground(new java.awt.Color(255, 153, 102));
+        Edit_OpTodYes.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        Edit_OpTodYes.setText("Y");
+        Edit_OpTodYes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Edit_OpTodYesActionPerformed(evt);
+            }
+        });
+        jPanel1.add(Edit_OpTodYes);
+        Edit_OpTodYes.setBounds(360, 580, 35, 25);
+
+        jLabel21.setFont(new java.awt.Font("Elephant", 3, 24)); // NOI18N
+        jLabel21.setText("Password");
+        jPanel1.add(jLabel21);
+        jLabel21.setBounds(10, 820, 180, 50);
+
+        jLabel22.setFont(new java.awt.Font("Elephant", 3, 24)); // NOI18N
+        jLabel22.setText("Open Today");
+        jPanel1.add(jLabel22);
+        jLabel22.setBounds(10, 570, 180, 50);
+        jPanel1.add(Edit_R_Password);
+        Edit_R_Password.setBounds(220, 830, 280, 40);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1019, Short.MAX_VALUE)
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void Edit_CityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Edit_CityActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Edit_CityActionPerformed
+
+    private void Edit_StateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Edit_StateMouseClicked
+        // TODO add your handling code here:
+        Edit_City.removeAllItems();
+        try {
+            stmt = conn.prepareCall("{call cityList(?, ?)}");
+            stmt.setString(1, Edit_State.getSelectedItem().toString());
+            //System.out.println(R_State.getSelectedItem().toString());
+            stmt.registerOutParameter(2, OracleTypes.CURSOR);
+            stmt.execute();
+
+            rs = (ResultSet) stmt.getObject(2);
+            while(rs.next()){
+                Edit_City.addItem(rs.getString("c_name"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Rest_SignUp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_Edit_StateMouseClicked
+
+
+    private void UpdateDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpdateDetailsActionPerformed
+        // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
+            
+            String Name = Edit_Name.getText();
+            String Street = Edit_Street.getText();
+            String City = Edit_City.getSelectedItem().toString();
+            String State = Edit_State.getSelectedItem().toString();
+            int ZipCode = Integer.parseInt(Edit_ZipCode.getText());
+            String OpTime = "01-JAN-20 " + OT_Hr.getSelectedItem().toString() + "." + OT_Min.getSelectedItem().toString() + ".00.000000 " + OT_AM_PM.getSelectedItem().toString();
+            String ClTime = "01-JAN-20 " + CT_Hr.getSelectedItem().toString() + "." + CT_Min.getSelectedItem().toString() + ".00.000000 " + CT_AM_PM.getSelectedItem().toString();
+            //String OpTime = "01-JAN-20 08.30.00.000000 AM", ClTime = "01-JAN-20 11.45.00.000000 PM";            
+               System.out.println(OpTime + " bb " + ClTime);
+            int OpTod = this.opTod;
+            int HDel = this.homeDel;
+            int Dine = this.dine;
+            long PNo = Long.parseLong(Edit_PhoneNo.getText());
+            int tab = Integer.parseInt(Edit_Max_Tables.getText());
+            String pwd = Edit_R_Password.getText();
+            
+            if(foo(Name)){
+                Name = "|||";
+                System.out.println("lihivil");
+            }
+            if(foo(Street)){
+                Street = "|||";
+            }
+            if(foo(City)){
+                City = "|||";
+            }
+            if(foo(State)){
+                State = "|||";
+            }
+            if(OpTime.length()!=28 || ClTime.length()!=28){
+                OpTime = "|||";
+                ClTime = "|||";
+                System.out.println("ouvhuoyg");
+            }
+            if(foo(Edit_PhoneNo.getText())){
+                PNo = -1;
+            }
+            if(foo(Edit_ZipCode.getText())){
+                ZipCode = -1;
+            }
+            if(foo(Edit_Max_Tables.getText())){
+                tab = -1;
+            }
+            if(foo(Edit_R_Password.getText())){
+                pwd = "|||";
+            }
+            
+            stmt = conn.prepareCall("{call editRestaurantDetails(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+            stmt.setString(1, this.resId);
+            stmt.setString(2, Name);
+            stmt.setString(3, Street);
+            stmt.setString(4, City);
+            stmt.setString(5, State);
+            stmt.setInt(6, ZipCode);
+            stmt.setString(7, OpTime);
+            stmt.setString(8, ClTime);
+            stmt.setInt(9, OpTod);
+            stmt.setInt(10, HDel);
+            stmt.setInt(11, Dine);
+            stmt.setLong(12, PNo);
+            stmt.setInt(13, tab);
+            stmt.setString(14, pwd);
+            
+            stmt.registerOutParameter(15, OracleTypes.INTEGER);
+            
+            stmt.execute();
+            
+            int success = stmt.getInt(15);
+            if(success == 1){
+                System.out.println("Successfully Updated!");
+            }
+            
+            
+            After_Rest_Sign_In_OR_Up mf = new After_Rest_Sign_In_OR_Up(conn, resId);
+            this.setVisible(false);
+            this.dispose();
+            mf.setVisible(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(Rest_SignUp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_UpdateDetailsActionPerformed
+    
+    private void Edit_HD_NoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Edit_HD_NoActionPerformed
+        // TODO add your handling code here:
+        this.homeDel = 0;
+    }//GEN-LAST:event_Edit_HD_NoActionPerformed
+
+    private void Edit_HD_YesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Edit_HD_YesActionPerformed
+        // TODO add your handling code here:
+        this.homeDel = 1;
+    }//GEN-LAST:event_Edit_HD_YesActionPerformed
+
+    private void Edit_D_YesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Edit_D_YesActionPerformed
+        // TODO add your handling code here:
+        this.dine = 1;
+    }//GEN-LAST:event_Edit_D_YesActionPerformed
+
+    private void Edit_D_NoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Edit_D_NoActionPerformed
+        // TODO add your handling code here:
+        this.dine = 0;
+    }//GEN-LAST:event_Edit_D_NoActionPerformed
+
+    private void Edit_OpTodNoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Edit_OpTodNoActionPerformed
+        // TODO add your handling code here:
+        this.opTod = 0;
+    }//GEN-LAST:event_Edit_OpTodNoActionPerformed
+
+    private void Edit_OpTodYesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Edit_OpTodYesActionPerformed
+        // TODO add your handling code here:
+        this.opTod = 1;
+    }//GEN-LAST:event_Edit_OpTodYesActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(EditDetails.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(EditDetails.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(EditDetails.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(EditDetails.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new EditDetails().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> CT_AM_PM;
+    private javax.swing.JComboBox<String> CT_Hr;
+    private javax.swing.JComboBox<String> CT_Min;
+    private javax.swing.JComboBox<String> Edit_City;
+    private javax.swing.JRadioButton Edit_D_No;
+    private javax.swing.JRadioButton Edit_D_Yes;
+    private javax.swing.JRadioButton Edit_HD_No;
+    private javax.swing.JRadioButton Edit_HD_Yes;
+    private javax.swing.JTextField Edit_Max_Tables;
+    private javax.swing.JTextField Edit_Name;
+    private javax.swing.JRadioButton Edit_OpTodNo;
+    private javax.swing.JRadioButton Edit_OpTodYes;
+    private javax.swing.JTextField Edit_PhoneNo;
+    private javax.swing.JPasswordField Edit_R_Password;
+    private javax.swing.JComboBox<String> Edit_State;
+    private javax.swing.JTextField Edit_Street;
+    private javax.swing.JTextField Edit_ZipCode;
+    private javax.swing.JComboBox<String> OT_AM_PM;
+    private javax.swing.JComboBox<String> OT_Hr;
+    private javax.swing.JComboBox<String> OT_Min;
+    private javax.swing.JButton UpdateDetails;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
+    // End of variables declaration//GEN-END:variables
+}
